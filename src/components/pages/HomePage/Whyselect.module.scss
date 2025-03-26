@@ -1,0 +1,61 @@
+.Whyselect {
+  /* Общие отступы сверху/снизу */
+  padding: clamp(20px, 5vw, 80px) 0;
+  /* Текст по центру (заголовок и пр.) */
+  text-align: center;
+
+  .container {
+    /* Можно ограничить максимальную ширину и центрировать */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 clamp(10px, 4vw, 20px);
+  }
+
+  /* Заголовок секции */
+  h2 {
+    font-size: clamp(20px, 5vw, 36px);
+    margin-bottom: clamp(10px, 3vw, 20px);
+  }
+
+  /* Абзац с описанием */
+  .description {
+    max-width: 800px;
+    margin: 0 auto; // центрируем абзац
+    font-size: clamp(14px, 2vw, 18px);
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: clamp(20px, 5vw, 40px);
+  }
+
+  /* Контейнер для блоков-преимуществ */
+  .features {
+    /* Сетка, которая плавно подстраивается под ширину экрана */
+    display: grid;
+    /* auto-fit подбирает количество столбцов под ширину, 
+         minmax(...) не даёт блокам быть меньше 240px */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: clamp(16px, 3vw, 32px);
+    /* Можно выставить text-align: left, если хотите левое выравнивание внутри блоков */
+    text-align: left;
+  }
+
+  /* Отдельный блок-преимущество */
+  .featureItem {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: clamp(12px, 2vw, 24px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      font-size: clamp(16px, 3vw, 22px);
+      margin-bottom: clamp(6px, 1.5vw, 12px);
+      color: #333;
+    }
+
+    p {
+      font-size: clamp(14px, 2vw, 16px);
+      color: #555;
+      line-height: 1.5;
+    }
+  }
+}

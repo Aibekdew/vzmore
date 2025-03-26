@@ -1,0 +1,65 @@
+.Located {
+  /* Отступы секции сверху и снизу */
+  padding: 40px 0;
+  background-color: #f9f9f9;
+
+  .container {
+    /* Ширина на больших экранах до 1200px, на маленьких - вся ширина */
+    width: 100%;
+    max-width: clamp(320px, 90vw, 1200px);
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .title {
+    /* Заголовок, который адаптируется:
+         - минимум ~1.5rem (24px),
+         - "середина" 5vw,
+         - максимум ~2.5rem (40px) */
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .address {
+    /* Текст адреса:
+         - минимум ~1rem (16px),
+         - "середина" 2vw,
+         - максимум ~1.2rem (19px) */
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 30px;
+
+    /* Ссылка на почту - подчеркивание по ховеру */
+    a {
+      color: #007bff;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .mapWrapper {
+    /* Ширина 100% контейнера */
+    width: 100%;
+    /* Высоту зададим через соотношение или clamp.
+         Но проще iframe внутри заполнит нужную высоту, если прописать width/height. */
+    overflow: hidden;
+    border-radius: 8px; /* Слегка скруглим углы под карту, если нужно */
+
+    iframe {
+      /* iframe растянется на всю ширину родителя */
+      width: 100%;
+      /* Можно зафиксировать высоту, либо оставить авто (зависит от вёрстки).
+           Например, зафиксируем через clamp:
+           - минимум 300px
+           - "середина" 40vw
+           - максимум 500px
+        */
+      height: clamp(300px, 40vw, 500px);
+      border: 0;
+    }
+  }
+}

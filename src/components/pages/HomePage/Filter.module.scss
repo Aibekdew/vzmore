@@ -1,0 +1,98 @@
+.Filter {
+  /* Фоновый цвет и отступы для секции */
+  background-color: #f5f5f5;
+  padding: clamp(10px, 3vw, 40px) 0;
+
+  /* Оболочка */
+  .inner {
+    /* Flex для расположения заголовка и фильтров в одной линии */
+    display: flex;
+    flex-wrap: wrap; // Чтобы на узких экранах переносилось
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(10px, 2vw, 40px); // Горизонтальный/вертикальный зазор
+  }
+
+  /* Блок заголовка и подзаголовка */
+  .titleBlock {
+    h2 {
+      /* Адаптивный заголовок: от 16px до 28px */
+      font-size: clamp(16px, 4vw, 28px);
+      margin: 0;
+    }
+
+    p {
+      /* Подпись: от 12px до 18px */
+      font-size: clamp(12px, 2vw, 18px);
+      color: #666;
+      margin: 5px 0 0;
+    }
+  }
+
+  /* Основной блок с фильтрами */
+  .filterBlock {
+    display: flex;
+    flex-wrap: wrap; // На мобильном переносим
+    align-items: center;
+    gap: clamp(10px, 2vw, 30px);
+
+    /* Общий вид карточек (заезд, выезд, гости) */
+    .item {
+      background: #fff;
+      border-radius: 6px;
+      padding: clamp(8px, 2vw, 16px);
+      min-width: clamp(120px, 15vw, 200px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+      .label {
+        /* Название поля (Заезд, Выезд, Гости) */
+        font-size: clamp(12px, 2vw, 14px);
+        color: #888;
+      }
+
+      .value {
+        /* Значение поля (24.03.2025 и т.д.) */
+        font-size: clamp(14px, 2vw, 16px);
+        font-weight: 600;
+        margin-top: 4px;
+      }
+    }
+
+    /* Чекбокс "У меня промокод" */
+    .promo {
+      display: flex;
+      align-items: center;
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: clamp(12px, 2vw, 14px);
+        cursor: pointer;
+
+        input[type="checkbox"] {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    /* Кнопка "Найти номер" */
+    .searchButton {
+      background-color: #0052cc;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: clamp(8px, 2vw, 16px) clamp(16px, 3vw, 32px);
+      font-size: clamp(14px, 2vw, 16px);
+      cursor: pointer;
+      white-space: nowrap; // Чтобы текст не переносился
+
+      &:hover {
+        background-color: #003d99;
+      }
+    }
+  }
+}

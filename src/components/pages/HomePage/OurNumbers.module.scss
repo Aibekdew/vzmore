@@ -1,0 +1,133 @@
+.OurNumbers {
+  /* Вертикальные отступы секции */
+  padding: 40px 0;
+  background-color: #f7f7f7;
+
+  /* Контейнер с использованием clamp() 
+       - min 320px, в идеале 90% ширины, но не более 1200px */
+  .container {
+    width: 100%;
+    max-width: clamp(320px, 90vw, 1200px);
+    margin: 0 auto;
+  }
+
+  /* Заголовок секции */
+  .title {
+    text-align: center;
+    /* font-size с clamp() 
+         - минимум ~1.5rem (24px), 
+         - "идеальная" точка ~5vw, 
+         - максимум ~2.5rem (40px) */
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 600;
+    margin-bottom: 40px;
+  }
+
+  /* Обёртка для карточек (flex-wrap для адаптива) */
+  .cardsWrapper {
+    display: flex;
+    flex-wrap: wrap; /* Чтобы на узких экранах карточки шли в столбик */
+    gap: 20px;
+    justify-content: center; /* Центрируем карточки на маленьких экранах */
+  }
+
+  /* Каждая карточка */
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    /* ширина будет адаптивно меняться:
+         - минимум 280px, 
+         - "идеальный" вариант 45vw, 
+         - максимум 550px (чтобы влезало 2 карточки в ряд на больших экранах) */
+    width: clamp(280px, 45vw, 550px);
+
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+
+  /* Слайдер-контейнер для изображений */
+  .imageWrapper {
+    position: relative;
+    /* Высота тоже через clamp:
+         - минимум 200px, 
+         - "середина" 30vw (зависит от ширины экрана), 
+         - максимум 350px */
+    height: clamp(200px, 30vw, 350px);
+    overflow: hidden;
+  }
+
+  /* Картинки внутри слайдера */
+  .roomImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+
+  /* Активная картинка */
+  .active {
+    opacity: 1;
+  }
+
+  /* Текстовая часть карточки */
+  .info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* Заголовок номера */
+  .roomTitle {
+    /* clamp() для более гибкого размера:
+         - минимум 1.2rem, 
+         - "середина" 3vw, 
+         - максимум 1.6rem */
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  /* Описание номера */
+  .description {
+    /* минимум 0.9rem, 
+         - "середина" 2.5vw, 
+         - максимум 1rem */
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    line-height: 1.4;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  /* Кнопка "Бронировать" */
+  .btn {
+    /* Размер шрифта тоже через clamp:
+         - минимум 0.9rem, 
+         - "середина" 2vw, 
+         - максимум 1rem */
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    align-self: flex-start;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}

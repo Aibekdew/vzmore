@@ -1,0 +1,31 @@
+.Footer {
+  padding: clamp(16px, 4vw, 32px) 0;
+
+  /* 
+    При желании можно задать ширину контейнера через clamp()
+    и центрировать содержимое
+  */
+  .container {
+    width: min(100%, clamp(320px, 90%, 1920px));
+    margin: 0 auto;
+  }
+
+  /* Контент футера (коммерческое предложение и копирайт) */
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 24px); /* расстояние между элементами */
+
+    .offer {
+      font-size: clamp(14px, 1.5vw, 20px);
+      color: #333; /* или любой другой цвет */
+    }
+
+    .copy {
+      font-size: clamp(12px, 1.2vw, 16px);
+      color: #777; /* или любой другой цвет */
+    }
+  }
+}
