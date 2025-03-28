@@ -14,7 +14,7 @@ const HomeSection = () => {
       <Whyselect />
       <OurNumbers />
       <Located />
-      {/* <Register /> */}
+      <Register />
     </div>
   );
 };

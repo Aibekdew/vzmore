@@ -19,11 +19,10 @@ const Located: FC = () => {
         </p>
 
         <div className={scss.mapWrapper}>
-          {/* Замените src на ваш реальный Google Maps Embed URL */}
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2923.578925420541!2d74.60061367692485!3d42.82930257128627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x389ec86a38a72fc3%3A0x63f7bd1367ae35d4!2sBishkek%20Hotel!5e0!3m2!1sru!2skg!4v1689900000000!5m2!1sru!2skg"
-            width="600"
-            height="450"
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6305.246641058835!2d77.2242258!3d42.6442787!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3884585af7f9f8e3%3A0x5631b2ff9854e139!2z0KHQsNC90LDRgtC-0YDQuNC5ICLQmtGL0YDQs9GL0LfRgdC60L7QtSDQktC30LzQvtGA0YzQtSI!5e1!3m2!1sru!2skg!4v1742964112778!5m2!1sru!2skg"
+            width="800"
+            height="600"
             style={{ border: 0 }}
             allowFullScreen
             loading="lazy"

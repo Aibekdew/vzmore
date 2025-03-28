@@ -1,6 +1,8 @@
 "use client";
 import { FC, useState, useEffect } from "react";
 import scss from "./OurNumbers.module.scss";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface RoomInfo {
   title: string;
@@ -10,6 +12,7 @@ interface RoomInfo {
 }
 
 const OurNumbers: FC = () => {
+  const navigate = useRouter();
   // Данные двух номеров (Deluxe и Superior)
   const rooms: RoomInfo[] = [
     {
@@ -82,7 +85,10 @@ const OurNumbers: FC = () => {
                   {room.title} - {room.price}$
                 </h3>
                 <p className={scss.description}>{room.description}</p>
-                <button className={scss.btn}>Бронировать</button>
+                <Link href={"/booking"}>
+                  {" "}
+                  <button className={scss.btn}>Бронировать</button>
+                </Link>
               </div>
             </div>
           ))}
