@@ -1,0 +1,128 @@
+.Contact {
+  /* Фон секции и анимация появления */
+  background: #f5f5f5;
+  padding: clamp(1rem, 5vw, 4rem) 0;
+  animation: fadeInUp 0.8s ease-out;
+
+  .container {
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 2vw, 2rem);
+  }
+
+  .contactInner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1rem, 2vw, 2rem);
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  /* Левая часть */
+  .left {
+    flex: 1 1 50%;
+    min-width: 280px;
+  }
+
+  /* Правая часть (карточка) */
+  .right {
+    flex: 1 1 40%;
+    min-width: 280px;
+    background: #fff;
+    border-radius: 8px;
+    padding: clamp(1rem, 2vw, 2rem);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  /* Заголовок с hover-эффектом */
+  .title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    margin-bottom: clamp(0.5rem, 1vw, 1rem);
+    font-weight: 700;
+    color: #333;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateX(5px);
+      color: #0056b3;
+    }
+  }
+
+  .description {
+    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .address {
+    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+    line-height: 1.4;
+    color: #333;
+  }
+
+  .email {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #0056b3;
+    }
+  }
+
+  .phone {
+    display: inline-block;
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #c0392b;
+    }
+  }
+
+  /* Адаптив: на маленьком экране колонки становятся в столбик */
+  @media (max-width: 768px) {
+    .contactInner {
+      flex-direction: column;
+    }
+  }
+
+  .mapWrapper {
+    margin-top: 60px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+
+    iframe {
+      width: 100%;
+      height: clamp(300px, 40vw, 500px);
+      border: 0;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.02);
+      }
+    }
+  }
+}
+
+/* Ключевые кадры для анимации появления */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

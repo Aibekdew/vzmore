@@ -4,7 +4,6 @@ import Filter from "./HomePage/Filter";
 import Whyselect from "./HomePage/Whyselect";
 import OurNumbers from "./HomePage/OurNumbers";
 import Located from "./HomePage/Located";
-import Register from "./RegisterPage/Register";
 
 const HomeSection = () => {
   return (
@@ -14,7 +13,6 @@ const HomeSection = () => {
       <Whyselect />
       <OurNumbers />
       <Located />
-      <Register />
     </div>
   );
 };

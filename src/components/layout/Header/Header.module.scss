@@ -12,6 +12,15 @@
   }
 }
 
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 @keyframes fadeSlideIn {
   0% {
     opacity: 0;
@@ -23,27 +32,17 @@
   }
 }
 
-@keyframes slideInRight {
-  0% {
-    right: -100%;
-  }
-  100% {
-    right: 0;
-  }
-}
-
 /**************************************
  * ХЕДЕР
  **************************************/
 .Header {
-  /* Плавное появление сверху */
-  animation: fadeInFromTop 0.5s ease forwards;
   position: fixed;
   width: 100%;
-  /* Полупрозрачный фон, чтобы было видно задний фон */
-  // background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
   z-index: 1000;
+  color: #fff;
+  animation: fadeInFromTop 0.5s ease forwards;
+  /* Задний фон хедера (при желании можно убрать/изменить) */
+  background-color: rgba(0, 0, 0, 0.8);
 
   .container {
     width: min(100%, clamp(320px, 90%, 1920px));
@@ -51,13 +50,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Адаптивные отступы */
     padding: clamp(10px, 2vw, 15px);
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+    &:hover {
+      color: #ddd;
+    }
   }
 
   .logo {
     img {
-      /* Логотип: от 30px до 80px по высоте */
       height: clamp(30px, 5vw, 80px);
       object-fit: contain;
     }
@@ -70,32 +75,35 @@
   }
 
   /**************************************
-   * БУРГЕР (мобильная кнопка)
+   * БУРГЕР (мобилдик)
    **************************************/
   .burger {
-    display: none;
-    cursor: pointer;
     position: relative;
     width: clamp(30px, 8vw, 50px);
-    height: clamp(20px, 4vw, 35px);
+    height: clamp(24px, 5vw, 40px);
+    cursor: pointer;
+    display: none; /* Изначально скрываем на десктопе */
 
     span {
-      display: block;
       position: absolute;
-      height: 3px;
+      left: 0;
       width: 100%;
-      background: #fff;
-      border-radius: 3px;
-      transition: 0.25s ease-in-out;
+      height: 4px;
+      background-color: #fff;
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.2s ease;
     }
 
+    /* Верхняя полоса */
     span:nth-child(1) {
       top: 0;
     }
+    /* Средняя полоса */
     span:nth-child(2) {
       top: 50%;
       transform: translateY(-50%);
     }
+    /* Нижняя полоса */
     span:nth-child(3) {
       bottom: 0;
     }
@@ -103,16 +111,20 @@
     &.open {
       span:nth-child(1) {
         top: 50%;
-        transform: translateY(-50%) rotate(135deg);
+        transform: translateY(-50%) rotate(45deg);
       }
       span:nth-child(2) {
         opacity: 0;
-        transform: translateX(-60px);
       }
       span:nth-child(3) {
         bottom: 50%;
-        transform: translateY(50%) rotate(-135deg);
+        transform: translateY(50%) rotate(-45deg);
       }
+    }
+
+    // Мобильный breakpoint
+    @media (max-width: 768px) {
+      display: block;
     }
   }
 
@@ -130,8 +142,8 @@
 
       li {
         font-size: clamp(14px, 1.2vw, 20px);
-        cursor: pointer;
         position: relative;
+        cursor: pointer;
         transition: color 0.2s;
 
         &:hover {
@@ -139,8 +151,39 @@
         }
       }
     }
+
+    /* Мобильное меню */
+    @media (max-width: 768px) {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: clamp(220px, 70vw, 350px);
+      height: 100vh;
+      background-color: #111;
+      transition: transform 0.3s ease;
+      z-index: 9999;
+      padding-top: clamp(50px, 10vw, 100px);
+      animation: slideInRight 0.3s forwards; /* плавно появляется */
+
+      ul {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0 1rem;
+      }
+    }
+
+    &.open {
+      @media (max-width: 768px) {
+        right: 0; /* чтобы не дергалось */
+        transform: translateX(0);
+      }
+    }
   }
 
+  /**************************************
+   * ДРОПДАУН (выбор языка и т.д.)
+   **************************************/
   .language {
     display: inline-flex;
     align-items: center;
@@ -182,10 +225,8 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
 
     h3 {
-      width: 100%;
       margin: 0;
       padding: 0.5rem 1rem;
-      font-size: inherit;
       transition: background-color 0.2s;
 
       &:hover {
@@ -195,7 +236,7 @@
   }
 
   /**************************************
-   * СОЦСЕТИ
+   * СОЦИАЛЬНЫЕ ССЫЛКИ
    **************************************/
   .social {
     display: flex;
@@ -203,7 +244,6 @@
     gap: clamp(10px, 2vw, 20px);
 
     a {
-      color: #fff;
       font-size: clamp(16px, 2vw, 24px);
       transition: color 0.3s;
 
@@ -212,38 +252,22 @@
       }
     }
   }
-}
 
-/****************************************
- * МЕДИА: для экранов < 768px
- ****************************************/
-@media (max-width: 768px) {
-  .burger {
-    display: block;
-  }
-
-  /* Мобильное меню: выезжает справа */
-  .nav {
+  /**************************************
+   * ПОЛУПРОЗРАЧНЫЙ БЭКДРОП
+   **************************************/
+  .backdrop {
+    /* Во весь экран */
     position: fixed;
     top: 0;
-    right: -100%;
-    width: clamp(200px, 70vw, 350px);
+    left: 0;
+    width: 100vw;
     height: 100vh;
-    background-color: #333;
-    transition: right 0.3s ease;
-    padding-top: clamp(60px, 10vw, 100px);
-    z-index: 9999;
 
-    ul {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: clamp(10px, 4vw, 20px);
-      padding-left: 1rem;
-    }
-  }
+    /* Тёмный полупрозрачный фон */
+    background: rgba(0, 0, 0, 0.5);
 
-  .nav.open {
-    right: 0;
-    animation: slideInRight 0.3s ease forwards;
+    /* Для мобильного меню */
+    z-index: 999;
   }
 }

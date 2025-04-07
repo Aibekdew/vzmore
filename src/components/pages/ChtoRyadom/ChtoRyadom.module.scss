@@ -1,0 +1,92 @@
+.ChtoRyadom {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f7f7f7;
+  padding: clamp(2rem, 5vw, 4rem);
+  display: flex;
+  align-items: center; /* Вертикальное центрирование */
+  justify-content: center; /* Центрирование контейнера по горизонтали */
+}
+
+.content {
+  width: min(100%, clamp(320px, 90%, 1920px));
+  text-align: left; /* Текст выровнен по левому краю */
+}
+
+.title {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 700;
+  color: #333;
+  margin-bottom: clamp(1rem, 2vw, 2rem);
+  animation: fadeInDown 0.8s ease-out forwards;
+}
+
+.subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.5;
+  color: #555;
+  max-width: 800px;
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+.list {
+  max-width: 800px;
+  margin-bottom: clamp(1rem, 2vw, 2rem);
+  padding-left: 1.5rem; /* Отступ для отображения чекитей (буллетов) */
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  line-height: 1.5;
+  color: #333;
+  list-style: disc;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.4s;
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.mapInfo {
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 600;
+  color: #333;
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.6s;
+}
+
+.mapWrapper {
+  border-radius: 8px;
+  overflow: hidden;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.8s;
+
+  iframe {
+    display: block;
+  }
+}
+
+/* Анимация появления снизу */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Анимация появления сверху */
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

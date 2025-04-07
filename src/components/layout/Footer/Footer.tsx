@@ -9,7 +9,7 @@ const Footer: FC = () => {
       <div className={scss.container}>
         <div className={scss.content}>
           <p className={scss.offer}>Коммерческое предложение</p>
-          <p className={scss.copy}>© {currentYear} KHotel</p>
+          <p className={scss.copy}>© {currentYear} Кыргызское Взморье</p>
         </div>
       </div>
     </footer>

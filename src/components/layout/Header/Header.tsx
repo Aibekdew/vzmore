@@ -1,24 +1,34 @@
 import { FC, useState } from "react";
+import Link from "next/link";
 import scss from "./Header.module.scss";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 
 const Header: FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Переключение состояния меню
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  // Закрыть меню при клике на любой пункт
+  const handleMenuItemClick = () => {
+    setMenuOpen(false);
   };
 
   return (
     <header className={scss.Header}>
       <div className={scss.container}>
-        {/* ЛОГОТИП */}
+        {/* Логотип */}
         <div className={scss.logo}>
-          <img src="./logo.png" alt="logo" />
+          <Link href={"/"}>
+            {" "}
+            <img src="/logo.png" alt="logo" />
+          </Link>
         </div>
 
         <div className={scss.block}>
-          {/* БУРГЕР (мобильный) */}
+          {/* Бургер */}
           <div
             className={`${scss.burger} ${menuOpen ? scss.open : ""}`}
             onClick={toggleMenu}
@@ -28,23 +38,44 @@ const Header: FC = () => {
             <span></span>
           </div>
 
-          {/* НАВИГАЦИЯ (общая для десктопа и мобильного) */}
+          {/* Навигация */}
           <nav className={`${scss.nav} ${menuOpen ? scss.open : ""}`}>
             <ul>
-              <li>Главная</li>
+              <li onClick={handleMenuItemClick}>
+                <Link href="/">Главная</Link>
+              </li>
+
               <li className={scss.language}>
-                Номера
+                <Link href="/" onClick={handleMenuItemClick}>
+                  Номера
+                </Link>
                 <span className={scss.arrow}></span>
                 <div className={scss.dropdown}>
-                  <h3>Deluxe</h3>
-                  <h3>Superior</h3>
-                  <h3>Standard double</h3>
-                  <h3>Standard single</h3>
+                  <h3 onClick={handleMenuItemClick}>
+                    <Link href="/">Deluxe</Link>
+                  </h3>
+                  <h3 onClick={handleMenuItemClick}>
+                    <Link href="/">Superior</Link>
+                  </h3>
+                  <h3 onClick={handleMenuItemClick}>
+                    <Link href="/">Standard double</Link>
+                  </h3>
+                  <h3 onClick={handleMenuItemClick}>
+                    <Link href="/">Standard single</Link>
+                  </h3>
                 </div>
               </li>
-              <li>Ресторан</li>
-              <li>Что рядом</li>
-              <li>Контакты</li>
+
+              <li onClick={handleMenuItemClick}>
+                <Link href="/">Ресторан</Link>
+              </li>
+              <li onClick={handleMenuItemClick}>
+                <Link href="/chto-ryadom">Что рядом</Link>
+              </li>
+              <li onClick={handleMenuItemClick}>
+                <Link href="/contacts">Контакты</Link>
+              </li>
+
               <li className={scss.language}>
                 Русский
                 <span className={scss.arrow}></span>
@@ -57,7 +88,7 @@ const Header: FC = () => {
             </ul>
           </nav>
 
-          {/* СОЦИАЛЬНЫЕ ИКОНКИ */}
+          {/* Социалки */}
           <div className={scss.social}>
             <a href="#">
               <FaFacebookF />
@@ -68,6 +99,11 @@ const Header: FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Задний полупрозрачный фон для мобильного меню, который закрывает меню при клике */}
+      {menuOpen && (
+        <div className={scss.backdrop} onClick={handleMenuItemClick}></div>
+      )}
     </header>
   );
 };

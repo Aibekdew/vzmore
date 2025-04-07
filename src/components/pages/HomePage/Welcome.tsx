@@ -1,5 +1,6 @@
 import { FC } from "react";
 import scss from "./Welcome.module.scss";
+import Link from "next/link";
 
 const Welcome: FC = () => {
   return (
@@ -16,9 +17,11 @@ const Welcome: FC = () => {
       <div className={scss.overlay}></div>
 
       <div className={scss.container}>
-        <h1>"Кыргыз деңизи" санаториясы</h1>
+        <h1>Санаторий Кыргызское Взморье</h1>
         <p>Ресторан | Wi-Fi | Парковка</p>
-        <button>Бронировать сейчас</button>
+        <Link href={"/booking"}>
+          <button>Бронировать сейчас</button>
+        </Link>
       </div>
     </section>
   );

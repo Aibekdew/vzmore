@@ -13,7 +13,7 @@ const Located: FC = () => {
           <br />
           Кыргызстан, Бишкек, Ленинский район, 720038
           <br />
-          <a href="mailto:kishotel@gmail.com">kishotel@gmail.com</a>
+          <a href="mailto:kishotel@gmail.com">vzmore@gmail.com</a>
           <br />
           +996 700 995 565 / +996 555 123 456
         </p>

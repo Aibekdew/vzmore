@@ -3,7 +3,11 @@ import Register from "./RegisterPage/Register";
 
 const RegisterSection = () => {
   return (
-    <div>
+    <div
+      style={{
+        marginTop: "140px",
+      }}
+    >
       <Register />
     </div>
   );
