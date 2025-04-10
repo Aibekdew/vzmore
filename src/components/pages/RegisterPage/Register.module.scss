@@ -1,431 +1,457 @@
 .BookingPage {
+  /* Центрируем основной блок и задаём точную ширину/высоту */
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  min-height: 70vh;
+  margin: 0 auto; /* Центрировать */
+  background-color: #fff;
+  border: 1px solid #e2e2e2; /* Тонкая серая рамка, если нужно */
+  border-radius: 8px; /* Скруглённые углы, если видно на скриншоте */
+  padding: 32px; /* Внутренние отступы, подбираем как в макете */
   box-sizing: border-box;
   font-family: "Arial", sans-serif;
-  background-color: #fff;
-  border-radius: 6px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  color: #333;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+}
 
-  /* Шапка */
-  .headerRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
+/* ШАПКА */
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: #000;
+}
+
+/* Блок языка/валюты */
+.langCurrencyBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.selectedLang,
+.selectedCurrency {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  min-width: 60px;
+  justify-content: center;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f9f9f9;
+  }
+}
+
+.selectedLangCode {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Подзаголовок под "Бронирование" */
+.topSubtitle {
+  font-size: 16px;
+  text-align: center;
+  margin: 0 0 24px;
+  color: #444;
+}
+
+/* Блок с датами 
+   --- ВАЖНО: теперь столбец вместо строки --- */
+.dateRow {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+
+  label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+  }
+}
+
+/* Обёртка-инпут для выбора дат */
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 12px;
+  min-height: 42px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+
+  &:hover {
+    background-color: #fafafa;
+    border-color: #bbb;
   }
 
-  .pageTitle {
-    font-size: 24px;
-    font-weight: 600;
+  span {
+    font-size: 14px;
     color: #333;
+    white-space: nowrap;
+  }
+}
+
+/* Иконка календаря */
+.icon {
+  font-size: 16px;
+  color: #999;
+}
+
+/* СЕКЦИЯ "РАЗМЕЩЕНИЕ В НОМЕРЕ" */
+.roomSection {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.roomsTitle {
+  font-size: 18px;
+  margin: 0;
+  color: #000;
+  font-weight: 600;
+}
+
+.roomsSubtitle {
+  margin: 4px 0 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Блок конкретного номера */
+.roomBlock {
+  text-align: left;
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #fcfcfc;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+/* Заголовок номера + кнопка удаления */
+.roomHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.roomName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Кнопка "Удалить номер" */
+.removeRoomBtn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #c82333;
+  }
+}
+
+/* Взрослые + дети (бирки) + селект "Добавить детей" */
+.roomRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Селект для взрослых */
+.adultSelect {
+  appearance: none;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 10px 36px 10px 12px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  min-width: 130px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  background: url("/icons/arrow-down.svg") no-repeat right 10px center #fff;
+  background-size: 14px;
+
+  &:hover,
+  &:focus {
+    border-color: #999;
+  }
+}
+
+/* Бирки для каждого ребёнка */
+.childrenTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.childTag {
+  display: flex;
+  align-items: center;
+  background-color: #e7f1ff;
+  border: 1px solid #b4d1ff;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #333;
+  position: relative;
+
+  /* Кнопка «×» для удаления ребёнка */
+  button {
+    border: none;
+    background: transparent;
+    color: #333;
+    margin-left: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #000;
+    }
+  }
+}
+
+/* Селект для "Добавить детей" */
+.addChildSelect {
+  appearance: none;
+  background-color: #fff;
+  border: 1px dashed #999;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  padding: 10px 36px 10px 12px;
+  cursor: pointer;
+  font-weight: 500;
+  background: url("/icons/arrow-down.svg") no-repeat right 10px center #fff;
+  background-size: 14px;
+  transition: border-color 0.2s;
+
+  &:hover,
+  &:focus {
+    border-color: #666;
+  }
+}
+
+/* Кнопка "Ещё 1 номер" */
+.addRoomBtn {
+  display: inline-block;
+  margin-top: 12px;
+  background: transparent;
+  color: #007bff;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0056b3;
+  }
+}
+
+/* КНОПКА "НАЙТИ" */
+.searchBtnWrapper {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.searchBtn {
+  background-color: #003580;
+  color: #fff;
+  border: none;
+  padding: 12px 50px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+
+  &:hover {
+    background-color: #002f6c;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* РЕЗУЛЬТАТЫ ПОИСКА */
+.searchResult {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 16px;
+  margin-top: 16px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+
+  h2 {
+    font-size: 18px;
+    margin-top: 0;
+    font-weight: 600;
+  }
+
+  .alertBox {
+    background-color: #ffc107;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin: 12px 0;
+    font-weight: 500;
+  }
+
+  p {
     margin: 0;
   }
+}
 
-  /* Разделительная линия */
-  .separator {
-    border: none;
-    border-top: 1px solid #ddd;
-    margin: 0 -20px 20px -20px;
-  }
+/* МОДАЛЬНЫЕ ОКНА (даты, язык) */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
 
-  .topSubtitle {
-    text-align: center;
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 20px;
-  }
+.modalContent {
+  background-color: #fff;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  width: 100%;
+  max-width: 600px;
+  padding: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-  /* Даты (два инпута) */
-  .dateRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  .formGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 220px;
-
-    label {
-      font-size: 14px;
-      color: #333;
-      font-weight: 600;
-    }
-  }
-
-  .inputWrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: #fafafa;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px 12px;
-    cursor: pointer;
-    min-height: 40px;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: #f0f0f0;
-    }
-
-    span {
-      font-size: 14px;
-      color: #333;
-      white-space: nowrap;
-    }
-  }
-
-  .icon {
-    font-size: 16px;
-    color: #999;
-  }
-
-  /* Размещение в номерах */
-  .roomsTitle {
+  h3 {
+    margin: 0;
     font-size: 18px;
-    margin: 0 0 4px;
-    color: #333;
-    text-align: center;
-  }
-
-  .roomsSubtitle {
-    margin: 0 0 20px;
-    font-size: 14px;
-    color: #666;
-    text-align: center;
-  }
-
-  .roomsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-
-  .roomBlock {
-    background-color: #fafafa;
-    border: 1px solid #eee;
-    border-radius: 6px;
-    padding: 16px;
-  }
-
-  .roomHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .roomName {
-    font-size: 15px;
     font-weight: 600;
     color: #333;
   }
+}
 
-  .removeRoomBtn {
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #777;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
 
-    &:hover {
-      background-color: #c82333;
-    }
-  }
-
-  .roomRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 10px;
-  }
-
-  .adultSelect,
-  .addChildSelect {
-    appearance: none;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+  &:hover {
     color: #333;
-    cursor: pointer;
-    padding: 8px 12px;
-    padding-right: 30px;
-    height: 40px;
-    background: url("/icons/arrow-down.svg") no-repeat right 8px center #fff;
-    background-size: 14px;
-
-    &:hover,
-    &:focus {
-      border-color: #007bff;
-    }
   }
+}
 
-  /* Список детей */
-  .childList {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
-  }
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 
-  .childRow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    span {
-      font-size: 14px;
-      color: #333;
-    }
-
-    .childRemoveBtn {
-      background-color: #dc3545;
-      color: #fff;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #c82333;
-      }
-    }
-  }
-
-  /* Кнопка "Нужен ещё 1 номер +" */
-  .addRoomLine {
-    text-align: center;
-    margin-bottom: 20px;
-
-    button {
-      background-color: transparent;
-      color: #007bff;
-      border: none;
-      font-size: 15px;
-      cursor: pointer;
-      font-weight: 600;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  /* Кнопка "Найти" */
-  .searchBtnWrapper {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .searchBtn {
+  button {
     background-color: #007bff;
     color: #fff;
     border: none;
-    padding: 10px 40px;
+    padding: 8px 16px;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.2s;
 
     &:hover {
       background-color: #0056b3;
     }
-  }
 
-  /* Результаты поиска */
-  .searchResult {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 16px;
-    margin-top: 16px;
-
-    h2 {
-      font-size: 18px;
-      margin-top: 0;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .alertBox {
-      background-color: #ffc107;
-      color: #333;
-      padding: 8px 16px;
-      border-radius: 4px;
-      margin: 12px 0;
-      font-weight: 500;
-      text-align: center;
-    }
-
-    p {
-      text-align: center;
-    }
-  }
-
-  /* Язык/валюта */
-  .langCurrencyBox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .selectedLang {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: #e9ecf3;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #dce0e8;
-    }
-
-    img {
-      border-radius: 2px;
-    }
-
-    .selectedLangCode {
-      font-weight: 600;
-      font-size: 14px;
-      color: #333;
-    }
-  }
-
-  .selectedCurrency {
-    background-color: #e9ecf3;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 14px;
-    color: #333;
-  }
-
-  /* Модальные окна */
-  .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  }
-
-  .modalContent {
-    background-color: #fff;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    width: 100%;
-    max-width: 600px;
-    padding: 16px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .modalHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    h3 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-    }
-  }
-
-  .closeBtn {
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    color: #777;
-    cursor: pointer;
-    font-weight: bold;
-
-    &:hover {
-      color: #333;
-    }
-  }
-
-  .modalActions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-
-    button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
+    &:last-of-type {
+      background-color: #6c757d;
 
       &:hover {
-        background-color: #0056b3;
-      }
-
-      &:last-of-type {
-        background-color: #6c757d;
-
-        &:hover {
-          background-color: #5a6268;
-        }
+        background-color: #5a6268;
       }
     }
   }
+}
 
-  .langListWrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    max-height: 300px;
-    overflow-y: auto;
-  }
+/* Список языков в модалке */
+.langListWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
 
-  .langItem {
-    flex: 0 0 45%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px;
+.langItem {
+  flex: 0 0 45%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  img {
     border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  }
 
-    img {
-      border-radius: 4px;
-    }
+  &:hover {
+    background-color: #f2f2f2;
+  }
 
-    &:hover {
-      background-color: #f2f2f2;
-    }
-
-    span {
-      font-size: 14px;
-      color: #333;
-    }
+  span {
+    font-size: 14px;
+    color: #333;
   }
 }

@@ -9,7 +9,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 // Тип для одного номера
 interface IRoom {
   adults: number; // количество взрослых
-  childrenAges: string[]; // массив строк, где каждая строка — выбранный возраст ребёнка
+  childrenAges: string[]; // массив строк (возрасты детей)
 }
 
 // Список языков (пример)
@@ -19,9 +19,10 @@ const LANGUAGES = [
   { code: "deDE", short: "DE", label: "Deutsch", flag: "/flags/de.png" },
 ];
 
-// Список вариантов возраста (первый элемент "" будет отображаться как "+ Добавить детей")
+// Список вариантов возраста (первый элемент "" => "+ Добавить детей")
 const CHILD_AGE_OPTIONS = [
   "",
+  "Ребёнок до 1 года",
   "Ребёнок 1 год",
   "Ребёнок 2 года",
   "Ребёнок 3 года",
@@ -39,33 +40,34 @@ const Register: React.FC = () => {
   // Текущая дата (для "сегодня")
   const today = new Date();
 
-  // Даты заезда/выезда
+  // Даты заезда/выезда (храним в стейте)
   const [startDate, setStartDate] = useState<Date>(today);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  // Модалки (даты / язык)
+  // Состояние модалок (даты и язык)
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
 
-  // Язык
+  // Язык (по умолчанию — русский)
   const defaultLang = LANGUAGES.find((l) => l.code === "ruRU") || LANGUAGES[0];
   const [selectedLanguage, setSelectedLanguage] = useState(defaultLang);
 
-  // Список номеров (по умолчанию 1 номер, в котором 2 взрослых, 1 пустая строка для детей)
+  // Список номеров (по умолчанию 1 номер, 2 взрослых, 1 пустая строка для детей)
   const [rooms, setRooms] = useState<IRoom[]>([
-    { adults: 2, childrenAges: [""] }, // хотя бы одна пустая строка, чтобы отобразился селект "+ Добавить детей"
+    { adults: 2, childrenAges: [""] },
   ]);
 
   // Пример: показать «результаты поиска»
   const [showSearchResult, setShowSearchResult] = useState(false);
 
-  // ======= Работа с датами =======
+  // ======= Работа с датами (DatePicker) =======
   const openDateModal = () => setIsDateModalOpen(true);
   const closeDateModal = () => setIsDateModalOpen(false);
 
   const handleRangeChange = (
     dates: [Date | null, Date | null] | Date | null
   ) => {
+    // При выборе диапазона из DatePicker
     if (Array.isArray(dates)) {
       const [start, end] = dates;
       if (start) setStartDate(start);
@@ -102,18 +104,16 @@ const Register: React.FC = () => {
     setRooms((prev) => {
       const newRooms = [...prev];
       const room = newRooms[roomIndex];
-      // считаем, сколько уже детей
       const realChildren = room.childrenAges.filter((age) => age !== "").length;
-      // Если новая сумма не превышает 5, просто ставим
+      // Если сумма (взрослые + дети) <= 5, то ок
       if (value + realChildren <= 5) {
         room.adults = value;
       } else {
-        // иначе обрежем детей
+        // Иначе обрезаем детей
         const allowed = 5 - value;
         const onlyReal = room.childrenAges.filter((age) => age !== "");
         const cut = onlyReal.slice(0, allowed);
-        room.childrenAges = [...cut]; // оставляем только нужное кол-во
-        // Если все дети обрезаны, оставляем одну пустую строку
+        room.childrenAges = [...cut];
         if (cut.length === 0) {
           room.childrenAges.push("");
         }
@@ -124,7 +124,7 @@ const Register: React.FC = () => {
     });
   };
 
-  // Когда пользователь изменил (или выбрал) возраст в селекте для ребёнка
+  // Выбор возраста ребёнка
   const handleChildAgeChange = (
     newAge: string,
     roomIndex: number,
@@ -134,27 +134,18 @@ const Register: React.FC = () => {
       const newRooms = [...prev];
       const room = newRooms[roomIndex];
       const oldValue = room.childrenAges[childIndex];
-
-      // Присваиваем новое значение
       room.childrenAges[childIndex] = newAge;
-
-      // Считаем реальных детей
       const realChildren = room.childrenAges.filter((age) => age !== "").length;
-      // Проверяем лимит
       if (room.adults + realChildren > 5) {
         // откатываем
         room.childrenAges[childIndex] = oldValue;
       } else {
-        // Если выбрали реальный возраст (не ""), а это последняя строка => добавляем ещё одну пустую
-        if (newAge !== "") {
-          if (childIndex === room.childrenAges.length - 1) {
-            // проверим, не достигли ли 5
-            if (room.adults + realChildren < 5) {
-              room.childrenAges.push("");
-            }
+        // Если выбрали реальный возраст (не ""), а это последний селект — добавляем новый
+        if (newAge !== "" && childIndex === room.childrenAges.length - 1) {
+          if (room.adults + realChildren < 5) {
+            room.childrenAges.push("");
           }
         }
-        // Если выбрали "", и это не последний, ничего не делаем
       }
       newRooms[roomIndex] = room;
       return newRooms;
@@ -167,7 +158,6 @@ const Register: React.FC = () => {
       const newRooms = [...prev];
       const room = newRooms[roomIndex];
       room.childrenAges.splice(childIndex, 1);
-      // Если теперь нет детей вообще, добавим одну пустую строку
       const realChildren = room.childrenAges.filter((age) => age !== "").length;
       if (realChildren === 0) {
         room.childrenAges = [""];
@@ -192,7 +182,7 @@ const Register: React.FC = () => {
     });
   };
 
-  // ======= Модалки (Date / Language) =======
+  // ======= Модальное окно (Date) =======
   const DateModal = () =>
     ReactDOM.createPortal(
       <div className={scss.modalOverlay}>
@@ -203,6 +193,7 @@ const Register: React.FC = () => {
               ✕
             </button>
           </div>
+          {/* DatePicker с выбором диапазона (selectsRange) */}
           <DatePicker
             inline
             selectsRange
@@ -220,6 +211,7 @@ const Register: React.FC = () => {
       document.body
     );
 
+  // ======= Модалка выбора языка =======
   const LanguageModal = () =>
     ReactDOM.createPortal(
       <div className={scss.modalOverlay}>
@@ -249,7 +241,7 @@ const Register: React.FC = () => {
 
   return (
     <section className={scss.BookingPage}>
-      {/* Шапка (заголовок + язык/валюта) */}
+      {/* Шапка: заголовок + язык/валюта */}
       <div className={scss.headerRow}>
         <h1 className={scss.pageTitle}>Бронирование</h1>
         <div className={scss.langCurrencyBox}>
@@ -268,16 +260,14 @@ const Register: React.FC = () => {
         </div>
       </div>
 
-      {/* Разделитель */}
-      <div className={scss.separator} />
-
       {/* Подзаголовок */}
       <p className={scss.topSubtitle}>
         Выберите даты заезда, выезда и количество гостей
       </p>
 
-      {/* Два инпута: Дата заезда / Дата выезда */}
+      {/* === Два верхних инпута (Дата заезда / Дата выезда) === */}
       <div className={scss.dateRow}>
+        {/* Дата заезда */}
         <div className={scss.formGroup}>
           <label>Дата заезда</label>
           <div className={scss.inputWrapper} onClick={openDateModal}>
@@ -285,6 +275,8 @@ const Register: React.FC = () => {
             <span>{formatDate(startDate) || "Выбрать дату"}</span>
           </div>
         </div>
+
+        {/* Дата выезда */}
         <div className={scss.formGroup}>
           <label>Дата выезда</label>
           <div className={scss.inputWrapper} onClick={openDateModal}>
@@ -294,30 +286,29 @@ const Register: React.FC = () => {
         </div>
       </div>
 
-      <h2 className={scss.roomsTitle}>Размещение в номерах</h2>
-      <p className={scss.roomsSubtitle}>Взрослые от 13 лет и старше</p>
+      {/* Размещение */}
+      <div className={scss.roomSection}>
+        <h2 className={scss.roomsTitle}>Размещение в номере</h2>
+        <p className={scss.roomsSubtitle}>Взрослые от 13 лет и старше</p>
 
-      {/* Список номеров */}
-      <div className={scss.roomsContainer}>
         {rooms.map((room, roomIndex) => (
           <div key={roomIndex} className={scss.roomBlock}>
-            <div className={scss.roomHeader}>
-              <span className={scss.roomName}>Номер {roomIndex + 1}</span>
-              {rooms.length > 1 && (
+            {/* Если несколько номеров, отрисуем заголовок и кнопку удаления */}
+            {rooms.length > 1 && (
+              <div className={scss.roomHeader}>
+                <span className={scss.roomName}>Номер {roomIndex + 1}</span>
                 <button
                   className={scss.removeRoomBtn}
                   onClick={() => handleRemoveRoom(roomIndex)}
                 >
                   Удалить номер
                 </button>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Выбор взрослых + динамические селекты для детей */}
+            {/* Взрослые */}
             <div className={scss.roomRow}>
-              {/* Взрослые */}
               <div className={scss.formGroup}>
-                <label>Взрослые</label>
                 <select
                   className={scss.adultSelect}
                   value={room.adults}
@@ -332,16 +323,39 @@ const Register: React.FC = () => {
                   <option value={5}>5 взрослых</option>
                 </select>
               </div>
-            </div>
 
-            {/* Список детей (каждая строка — селект) */}
-            {room.childrenAges.map((childAge, childIndex) => (
-              <div className={scss.roomRow} key={childIndex}>
-                <div className={scss.formGroup}>
-                  <label style={{ visibility: "hidden" }}>Дети</label>
+              {/* Дети (бирки) */}
+              <div className={scss.childrenTags}>
+                {room.childrenAges
+                  .map((childAge, childIndex) => ({
+                    age: childAge,
+                    childIndex,
+                  }))
+                  .filter((c) => c.age !== "") // показываем только выбранных детей
+                  .map(({ age, childIndex }) => (
+                    <div key={childIndex} className={scss.childTag}>
+                      <span>{age}</span>
+                      <button
+                        onClick={() => handleRemoveChild(roomIndex, childIndex)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+              </div>
+
+              {/* Пустые селекты (для добавления новых детей) */}
+              {room.childrenAges
+                .map((childAge, childIndex) => ({
+                  age: childAge,
+                  childIndex,
+                }))
+                .filter((c) => c.age === "")
+                .map(({ childIndex }) => (
                   <select
+                    key={childIndex}
                     className={scss.addChildSelect}
-                    value={childAge}
+                    value={""}
                     onChange={(e) =>
                       handleChildAgeChange(
                         e.target.value,
@@ -352,37 +366,28 @@ const Register: React.FC = () => {
                   >
                     {CHILD_AGE_OPTIONS.map((opt) => (
                       <option key={opt} value={opt}>
-                        {opt === "" ? "+ Добавить детей" : opt}
+                        {opt === "" ? "Добавить детей" : opt}
                       </option>
                     ))}
                   </select>
-                </div>
-                {/* Кнопка "×", если возраст выбран (childAge !== "") */}
-                {childAge !== "" && (
-                  <button
-                    className={scss.childRemoveBtn}
-                    onClick={() => handleRemoveChild(roomIndex, childIndex)}
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-            ))}
+                ))}
+            </div>
           </div>
         ))}
+
+        <button className={scss.addRoomBtn} onClick={handleAddRoom}>
+          Нужен ещё 1 номер +
+        </button>
       </div>
 
-      <div className={scss.addRoomLine}>
-        <button onClick={handleAddRoom}>Нужен ещё 1 номер +</button>
-      </div>
-
+      {/* Кнопка "Найти" */}
       <div className={scss.searchBtnWrapper}>
         <button className={scss.searchBtn} onClick={handleSearch}>
           Найти
         </button>
       </div>
 
-      {/* Пример результата поиска */}
+      {/* Пример результатов поиска */}
       {showSearchResult && (
         <div className={scss.searchResult}>
           <h2>Выберите номер</h2>
@@ -394,7 +399,7 @@ const Register: React.FC = () => {
         </div>
       )}
 
-      {/* Модалки (даты / язык) */}
+      {/* Модалки (Даты / Язык) */}
       {isDateModalOpen && <DateModal />}
       {isLanguageModalOpen && <LanguageModal />}
     </section>
