@@ -2,9 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInUp {
@@ -29,6 +36,7 @@
 /* Прочие ваши глобальные стили, чтобы страница выглядела «как на втором фото» */
 body {
   @apply bg-gray-50 text-gray-800;
+  background: #f5f5f5;
   margin: 0;
   padding: 0;
 }

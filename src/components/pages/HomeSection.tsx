@@ -9,7 +9,10 @@ const HomeSection = () => {
   return (
     <div>
       <Welcome />
-      <Filter />
+      {/* Wrap Filter with an id that we can use for scrolling */}
+      <div id="filter">
+        <Filter />
+      </div>
       <Whyselect />
       <OurNumbers />
       <Located />

@@ -16,7 +16,13 @@ interface RoomModalProps {
   onClose: () => void;
 }
 
-export default function RoomModal({ room, checkIn, checkOut, guests, onClose }: RoomModalProps) {
+export default function RoomModal({
+  room,
+  checkIn,
+  checkOut,
+  guests,
+  onClose,
+}: RoomModalProps) {
   const [createBooking, { isLoading }] = useCreateBookingMutation();
 
   const handleBooking = async () => {
@@ -77,7 +83,7 @@ export default function RoomModal({ room, checkIn, checkOut, guests, onClose }: 
             <p>Количество комнат: {room.rooms_count}</p>
             <p className="mt-2 flex items-center gap-2 text-lg text-gray-800 font-semibold">
               <FaMoneyBillWave className="text-green-500" />
-              Цена за ночь: {room.price_per_night} KGS
+              Цена за день: {room.price_per_night} KGS
             </p>
           </div>
           <div className="mb-4 flex flex-wrap gap-4 text-sm text-gray-700">

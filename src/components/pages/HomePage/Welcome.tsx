@@ -1,8 +1,16 @@
+"use client";
 import { FC } from "react";
 import scss from "./Welcome.module.scss";
-import Link from "next/link";
 
 const Welcome: FC = () => {
+  // Scroll to the Filter component using its id "filter"
+  const scrollToFilter = () => {
+    const filterElement = document.getElementById("filter");
+    if (filterElement) {
+      filterElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className={scss.Welcome}>
       <video
@@ -19,9 +27,8 @@ const Welcome: FC = () => {
       <div className={scss.container}>
         <h1>Санаторий Кыргызское Взморье</h1>
         <p>Ресторан | Wi-Fi | Парковка</p>
-        <Link href={"/booking"}>
-          <button>Бронировать сейчас</button>
-        </Link>
+        {/* Replace Link with a button that triggers the scroll */}
+        <button onClick={scrollToFilter}>Бронировать сейчас</button>
       </div>
     </section>
   );

@@ -90,10 +90,10 @@ const Header: FC = () => {
 
           {/* Социалки */}
           <div className={scss.social}>
-            <a href="#">
+            <a href="https://www.facebook.com/vzmore.kg/">
               <FaFacebookF />
             </a>
-            <a href="#">
+            <a href="https://www.instagram.com/vzmore.kg/">
               <FaInstagram />
             </a>
           </div>

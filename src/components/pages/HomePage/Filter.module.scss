@@ -1,217 +1,448 @@
+/* Filter.module.scss - Modern Minimalism / Hi-Tech стиль */
+
 .Filter {
   width: 100%;
-  background: #f9f9f9;
-  padding: 40px 0;
+  background: #f5f5f5; /* Светлый фон для минимализма */
+  padding: 60px 0;
+  font-family: "Roboto", sans-serif;
 }
+
 .wrapper {
   width: min(100%, 1100px);
   margin: 0 auto;
   text-align: center;
 }
+
 .wrapper h2 {
-  font-size: 24px;
-  margin-bottom: 4px;
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #222;
+  font-weight: 700;
 }
+
 .wrapper p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 30px;
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 40px;
 }
+
 .roomItem {
-  background: #fff;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
+
 .inputsRow {
   display: flex;
   gap: 20px;
   overflow-x: auto;
+  justify-content: center;
 }
+
 .inputBlock {
   flex: 1;
   min-width: 220px;
-  background: #fafafa;
-  border: 1px solid #eee;
+  background: #fff;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 12px;
+  padding: 16px;
   cursor: pointer;
   position: relative;
-  transition: background-color 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .inputBlock:hover {
-  background-color: #f0f0f0;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
+
 .icon {
-  font-size: 18px;
+  font-size: 20px;
   position: absolute;
-  top: 12px;
-  right: 12px;
-  color: #999;
+  top: 16px;
+  right: 16px;
+  color: #004f9d; /* Hi-tech неоновый акцент */
 }
+
 .label {
   font-size: 12px;
-  color: #666;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
 .value {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   color: #333;
-  margin-top: 4px;
+  margin-top: 8px;
 }
+
 .searchBtn {
-  margin-top: 10px;
-  padding: 12px 30px;
-  background-color: #007acc;
+  margin-top: 20px;
+  padding: 14px 40px;
+  background-color: #004f9d;
   color: #fff;
   border: none;
   border-radius: 6px;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
-}
-.searchBtn:hover {
-  background-color: #0061a5;
+  transition: background-color 0.3s ease;
 }
 
-/* Modal стили */
+.searchBtn:hover {
+  background-color: #004f9d;
+}
+/*************************************
+ *  Файл: Filter.module.scss (фрагмент)
+ *************************************/
+
+/* ----- Общие стили модалки (пример) ----- */
 .modalBackdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4); // полупрозрачная подложка
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
+
 .modalContent {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 420px;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 700px;
   width: 90%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  color: #333;
 }
+
+/* Заголовок модалки */
+.calendarTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+/* ----- Месяцы ----- */
+.monthRow {
+  margin-bottom: 2rem;
+
+  h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    color: #333;
+    font-weight: 500;
+    text-align: left;
+  }
+}
+
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 0.5rem;
 }
+
+/* ----- Дни календаря ----- */
 .day {
-  background: #f9f9f9;
-  text-align: center;
-  padding: 10px 0;
-  border-radius: 4px;
-  border: 1px solid #eee;
+  position: relative;
+  background: #f6f6f6;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.8rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  /* Эффект при наведении */
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
 }
-.day:hover {
-  background-color: #f0f0f0;
+
+/* Номер дня */
+.dayNumber {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
 }
+
+/* Цена */
+.dayPrice {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Когда день выбран (входит в диапазон) */
 .selected {
-  background-color: #007acc;
+  background-color: #004f9d; /* Акцентный синий */
   color: #fff;
-  border-color: #007acc;
+  border-color: #004f9d;
 }
+
+/* Скругляем левый край (начало диапазона) */
+.rangeStart {
+  border-top-left-radius: 50px !important;
+  border-bottom-left-radius: 50px !important;
+}
+
+/* Скругляем правый край (конец диапазона) */
+.rangeEnd {
+  border-top-right-radius: 50px !important;
+  border-bottom-right-radius: 50px !important;
+}
+
+/* ----- Кнопки Применить/Отмена ----- */
 .buttonsRow {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  button {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  /* "Применить" */
+  button:first-of-type {
+    background-color: #004f9d;
+    color: #fff;
+    font-weight: 600;
+
+    &:hover {
+      background-color: #003a7a; /* темнее при ховере */
+    }
+  }
+
+  /* "Отмена" */
+  button:last-of-type {
+    background-color: #eee;
+    color: #333;
+
+    &:hover {
+      background-color: #ddd;
+    }
+  }
 }
-.buttonsRow button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.buttonsRow button:first-of-type {
-  background: #007acc;
-  color: #fff;
-}
-.buttonsRow button:last-of-type {
-  background: #ccc;
-}
+
 .promoInput {
   width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  margin-bottom: 16px;
+  padding: 12px;
+  font-size: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #333;
 }
 
 /* Room block for GuestsModal */
 .roomBlock {
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 15px;
-  margin-bottom: 15px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  color: #333;
 }
+
 .roomHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
+
 .removeRoomBtn {
   background: none;
   border: none;
   color: #999;
   cursor: pointer;
 }
+
 .counterRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.buttonsRow {
-  display: flex;
-  gap: 6px;
-}
+
 .counterBtn {
-  width: 36px;
-  height: 36px;
-  border: 1px solid #007acc;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #004f9d;
   background-color: #fff;
-  color: #007acc;
-  border-radius: 4px;
-  font-size: 18px;
+  color: #004f9d;
+  border-radius: 6px;
+  font-size: 20px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
+
 .counterValue {
-  min-width: 26px;
+  min-width: 30px;
   text-align: center;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
+  color: #333;
 }
+
 .childrenAges {
-  margin-top: 10px;
+  margin-top: 12px;
 }
+
 .ageItem {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
+
 .ageItem label {
   display: block;
-  margin-bottom: 4px;
-  font-size: 13px;
-  color: #555;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #666;
 }
+
 .addRoomBtn {
   display: inline-block;
-  margin-top: 5px;
-  padding: 10px 15px;
-  background-color: #e8f2fb;
-  color: #007acc;
-  border: 1px solid #007acc;
-  border-radius: 4px;
+  margin-top: 8px;
+  padding: 12px 20px;
+  background-color: #004f9d;
+  color: #fff;
+  border: 1px solid #004f9d;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
+}
+
+.addRoomBtn:hover {
+  background-color: #004f9d;
+}
+// Стили для календаря тарифов
+
+.monthRow {
+  margin-bottom: 2rem;
+
+  h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+    text-align: left;
+  }
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.day {
+  position: relative;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.dayNumber {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dayPrice {
+  font-size: 0.9rem;
+  color: #333;
+  margin-top: 2px;
+}
+
+.selected {
+  background-color: #004f9d;
+  color: #fff;
+  border-color: #004f9d;
+}
+
+.disabled {
+  background-color: #fafafa;
+  color: #aaa;
+  cursor: not-allowed;
+
+  &:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: #fafafa;
+  }
+}
+
+/* Прочие стили, уже присутствующие в вашем файле:
+   .modalBackdrop, .modalContent, .buttonsRow и др.
+*/
+
+.rangeStart {
+  border-top-left-radius: 50% !important;
+  border-bottom-left-radius: 50% !important;
+}
+.rangeEnd {
+  border-top-right-radius: 50% !important;
+  border-bottom-right-radius: 50% !important;
+}
+.day {
+  position: relative;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.selected {
+  background-color: #004f9d;
+  color: #fff;
+  border-color: #004f9d;
+  transition: background-color 0.3s ease;
+}
+
+// Начало и конец диапазона можно дополнительно скруглить:
+.rangeStart {
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  // Можно добавить что-то вроде особой рамки:
+  // box-shadow: inset -2px 0 0 0 #fff;
+}
+
+.rangeEnd {
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  // box-shadow: inset 2px 0 0 0 #fff;
 }

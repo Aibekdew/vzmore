@@ -1,5 +1,6 @@
+"use client";
 import { FC } from "react";
-import scss from "./Filter.module.scss";
+import scss from "./Filter.module.scss"; // Или отдельный .module.scss для GuestsModal
 import { FaTrash } from "react-icons/fa";
 
 interface IRoom {
@@ -14,8 +15,8 @@ interface IRoom {
 interface IGuestsModalProps {
   rooms: IRoom[];
   onClose: () => void;
-  onAddRoom: () => void; // Добавить новый номер
-  onRemoveRoom: (index: number) => void; // Удалить номер
+  onAddRoom: () => void;
+  onRemoveRoom: (index: number) => void;
   onUpdateRoom: (
     index: number,
     data: { adults: number; children: number; childrenAges: number[] }
@@ -29,7 +30,6 @@ const GuestsModal: FC<IGuestsModalProps> = ({
   onRemoveRoom,
   onUpdateRoom,
 }) => {
-  // Функция для красивого отображения возраста
   const getAgeLabel = (age: number) => {
     if (age === 1) return "1 год";
     if (age >= 2 && age <= 4) return `${age} года`;
@@ -43,7 +43,6 @@ const GuestsModal: FC<IGuestsModalProps> = ({
 
         {rooms.map((room, index) => {
           const incAdults = () => {
-            // Пример ограничения: (adults + children) <= 5
             if (room.adults < 4 && room.adults + room.children < 5) {
               onUpdateRoom(index, {
                 adults: room.adults + 1,
@@ -130,7 +129,6 @@ const GuestsModal: FC<IGuestsModalProps> = ({
                 </div>
               </div>
 
-              {/* Возраст детей */}
               {room.children > 0 && (
                 <div className={scss.childrenAges}>
                   {room.childrenAges.map((age, i) => (

@@ -1,8 +1,6 @@
 "use client";
 import { FC, useState, useEffect } from "react";
 import scss from "./OurNumbers.module.scss";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 interface RoomInfo {
   title: string;
@@ -12,8 +10,7 @@ interface RoomInfo {
 }
 
 const OurNumbers: FC = () => {
-  const navigate = useRouter();
-  // Данные двух номеров (Deluxe и Superior)
+  // Data for the two room types (Deluxe and Superior)
   const rooms: RoomInfo[] = [
     {
       title: "Deluxe",
@@ -39,24 +36,31 @@ const OurNumbers: FC = () => {
     },
   ];
 
-  // Текущее отображаемое изображение (индекс) для каждого номера
+  // Current displayed image index for each room
   const [currentIndices, setCurrentIndices] = useState<number[]>(
     new Array(rooms.length).fill(0)
   );
 
-  // Каждые 4 секунды переключаем индекс
+  // Change image index every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndices((prevIndices) =>
         prevIndices.map((currentIndex, idx) => {
-          const nextIndex = (currentIndex + 1) % rooms[idx].images.length;
-          return nextIndex;
+          return (currentIndex + 1) % rooms[idx].images.length;
         })
       );
     }, 4000);
 
     return () => clearInterval(interval);
   }, [rooms]);
+
+  // Function to scroll to the Filter component
+  const scrollToFilter = () => {
+    const filterElement = document.getElementById("filter");
+    if (filterElement) {
+      filterElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <section className={scss.OurNumbers}>
@@ -85,10 +89,10 @@ const OurNumbers: FC = () => {
                   {room.title} - {room.price}$
                 </h3>
                 <p className={scss.description}>{room.description}</p>
-                <Link href={"/booking"}>
-                  {" "}
-                  <button className={scss.btn}>Бронировать</button>
-                </Link>
+                {/* Instead of linking to another page, we call scrollToFilter */}
+                <button className={scss.btn} onClick={scrollToFilter}>
+                  Бронировать
+                </button>
               </div>
             </div>
           ))}

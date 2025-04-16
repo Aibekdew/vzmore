@@ -1,0 +1,214 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+/* Подложка модального окна */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-family: "Roboto", sans-serif;
+}
+
+/* Контейнер модального окна */
+.modalContent {
+  background: #fff;
+  padding: clamp(1rem, 2vw, 2rem);
+  border-radius: clamp(8px, 2vw, 12px);
+  max-width: 900px;
+  width: 90%;
+  box-shadow: 0 clamp(4px, 1vw, 8px) clamp(10px, 2vw, 20px) rgba(0, 0, 0, 0.2);
+  color: #333;
+  position: relative;
+}
+
+/* Заголовок календаря */
+.calendarTitle {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 700;
+  margin-bottom: clamp(0.8rem, 2vw, 1rem);
+  color: #222;
+  text-align: center;
+}
+
+/* 
+  ================
+   ОБЁРТКА МЕСЯЦЕВ
+  ================
+  Делаем так, чтобы два месяца шли слева-направо (горизонтально).
+  Если не хватает места по ширине экрана — появится горизонтальная прокрутка.
+*/
+.monthsWrapper {
+  display: flex;
+  flex-wrap: nowrap; /* Запрещаем перенос, всё в одну линию */
+  gap: clamp(1rem, 2vw, 2rem); /* Расстояние между календарями */
+  justify-content: center;
+  overflow-x: auto; /* Позволяем прокручивать по горизонтали */
+  padding-bottom: 0.5rem; /* Чуть отступаем снизу, чтобы скроллбар не прилегал */
+}
+
+/* 
+  =============
+   ОДИН МЕСЯЦ
+  =============
+  Уменьшаем min-width, чтобы влезали оба месяца. 
+  Можно подстраивать цифры под ваш макет, если нужно ещё меньше.
+*/
+.singleMonth {
+  /* Если слишком узко — увеличьте нижний порог. Или наоборот уменьшите. */
+  min-width: clamp(220px, 25vw, 280px);
+  flex: 0 0 auto; /* Чтобы ширина не растягивалась, а фиксировалась на min-width */
+}
+
+.monthName {
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  font-weight: 600;
+  margin-bottom: clamp(0.4rem, 1vw, 0.5rem);
+  color: #222;
+}
+
+/* Шапка дней недели */
+.weekDaysRow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(0.2rem, 1vw, 0.3rem);
+  margin-bottom: clamp(0.3rem, 1vw, 0.5rem);
+}
+
+.weekDayCell {
+  text-align: center;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+  font-weight: 500;
+  color: #888;
+}
+
+/* Сетка дат внутри месяца */
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(0.2rem, 1vw, 0.3rem);
+}
+
+/* Одна "ячейка" дня */
+.dayCell {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: clamp(4px, 1vw, 6px);
+  padding: clamp(0.5rem, 1vw, 0.7rem);
+  text-align: left;
+  min-height: clamp(50px, 8vw, 60px);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Пустые ячейки (до начала месяца) */
+.emptyCell {
+  background: transparent;
+  border: none;
+  cursor: default;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Номер дня */
+.dayNumber {
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  font-weight: 600;
+  color: #333;
+}
+
+/* Цена */
+.dayPrice {
+  font-size: clamp(0.75rem, 1.5vw, 0.8rem);
+  color: #555;
+  margin-top: clamp(0.3rem, 1vw, 0.4rem);
+}
+
+/* Дни, которые попадают в выбранный диапазон */
+.selected {
+  background-color: #004f9d;
+  color: #fff;
+  border-color: #004f9d;
+  transition: background-color 0.3s ease;
+}
+
+/* Скруглённый левый край диапазона */
+.rangeStart {
+  border-top-left-radius: 50px !important;
+  border-bottom-left-radius: 50px !important;
+}
+
+/* Скруглённый правый край диапазона */
+.rangeEnd {
+  border-top-right-radius: 50px !important;
+  border-bottom-right-radius: 50px !important;
+}
+
+/* Блок с информацией о выборе дат */
+.selectedInfo {
+  margin-top: clamp(1rem, 2vw, 1.5rem);
+  font-size: clamp(0.9rem, 1.5vw, 0.95rem);
+  font-weight: 500;
+  text-align: center;
+  color: #222;
+}
+
+/* Дополнительный текст под диапазоном */
+.subInfo {
+  margin-top: clamp(0.4rem, 1.5vw, 0.5rem);
+  font-size: clamp(0.75rem, 1.5vw, 0.8rem);
+  line-height: 1.2;
+  color: #777;
+  text-align: center;
+}
+
+/* Кнопки внизу */
+.buttonsRow {
+  display: flex;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  margin-top: clamp(1rem, 2vw, 2rem);
+  justify-content: center;
+
+  button {
+    flex: 0 0 auto;
+    min-width: clamp(100px, 20vw, 120px);
+    padding: clamp(0.5rem, 1.5vw, 0.8rem) clamp(1rem, 2vw, 1.4rem);
+    border: none;
+    border-radius: clamp(4px, 1vw, 6px);
+    font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: 600;
+  }
+
+  button:first-of-type {
+    background-color: #004f9d;
+    color: #fff;
+    &:hover {
+      background-color: #003a7a;
+    }
+  }
+
+  button:last-of-type {
+    background-color: #eee;
+    color: #333;
+    &:hover {
+      background-color: #ddd;
+    }
+  }
+}

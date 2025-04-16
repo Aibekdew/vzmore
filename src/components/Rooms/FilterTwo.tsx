@@ -1,23 +1,21 @@
 "use client";
-import { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import scss from "./Filter.module.scss";
-import { FaCalendarAlt, FaUserFriends, FaTag } from "react-icons/fa";
-
-import GuestsModal from "./GuestsModal";
-import CalendarModalRates from "./CalendarModalRates";
-import PromoModal from "./PromoModal";
+import scss from "./FilterTwo.module.scss";
+import { FaCalendarAlt, FaUserFriends, FaTag, FaFlag } from "react-icons/fa";
+import CalendarModalRates from "../pages/HomePage/CalendarModalRates";
+import GuestsModal from "../pages/HomePage/GuestsModal";
+import PromoModal from "../pages/HomePage/PromoModal";
 
 interface IRoom {
   checkIn: string | null; // "DD.MM.YYYY"
-  checkOut: string | null; // "DD.MM.YYYY"
+  checkOut: string | null;
   adults: number;
   children: number;
   childrenAges: number[];
-  promoCode?: string; // Название отеля / промокод
+  promoCode?: string;
 }
 
-// Комната по умолчанию (2 взрослых, 0 детей)
 const createNewRoom = (): IRoom => ({
   checkIn: null,
   checkOut: null,
@@ -27,19 +25,16 @@ const createNewRoom = (): IRoom => ({
   promoCode: "",
 });
 
-const Filter: FC = () => {
+const FilterTwo: FC = () => {
   const router = useRouter();
-
-  // Список комнат
   const [rooms, setRooms] = useState<IRoom[]>([createNewRoom()]);
 
-  // Состояния модалок
   const [openCheckInModal, setOpenCheckInModal] = useState(false);
   const [openCheckOutModal, setOpenCheckOutModal] = useState(false);
   const [openPromoModal, setOpenPromoModal] = useState(false);
   const [openGuestsModal, setOpenGuestsModal] = useState(false);
 
-  // 1) При первом рендере загружаем данные из localStorage
+  // 1) При монтировании: читаем из localStorage
   useEffect(() => {
     const storedData = localStorage.getItem("bookingRooms");
     if (storedData) {
@@ -49,18 +44,17 @@ const Filter: FC = () => {
           setRooms(parsed);
         }
       } catch (error) {
-        console.warn("Ошибка чтения из localStorage:", error);
+        console.warn("Ошибка чтения localStorage:", error);
       }
     }
   }, []);
 
-  // 2) При каждом изменении `rooms` — сохраняем в localStorage
+  // 2) При каждом изменении rooms: сохраняем в localStorage
   useEffect(() => {
     localStorage.setItem("bookingRooms", JSON.stringify(rooms));
   }, [rooms]);
 
-  // ==== Обработчики ====
-  // Выбор даты заезда (start) и выезда (end)
+  // Обработчики
   const handleCheckInSelect = (
     roomIndex: number,
     start: string,
@@ -79,14 +73,12 @@ const Filter: FC = () => {
     );
   };
 
-  // Промокод = название отеля
   const handlePromoChange = (roomIndex: number, promoCode: string) => {
     setRooms((prev) =>
       prev.map((r, i) => (i === roomIndex ? { ...r, promoCode } : r))
     );
   };
 
-  // Добавить / удалить номер (комнату)
   const handleAddRoom = () => {
     setRooms((prev) => [...prev, createNewRoom()]);
   };
@@ -99,7 +91,6 @@ const Filter: FC = () => {
     });
   };
 
-  // Изменение взрослых/детей
   const handleRoomGuestsChange = (
     roomIndex: number,
     newData: { adults: number; children: number; childrenAges: number[] }
@@ -109,43 +100,23 @@ const Filter: FC = () => {
     );
   };
 
-  // Допустим, для query нам нужно "YYYY-MM-DD"
-  const convertDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    const [dd, mm, yyyy] = dateStr.split(".");
-    return `${yyyy}-${mm}-${dd}`;
-  };
-
-  // Нажатие «Найти номер»
+  // Если хотите добавить кнопку на втором экране, можно
   const handleFindRoom = () => {
-    const mainRoom = rooms[0]; // первая комната
-    if (!mainRoom.checkIn || !mainRoom.checkOut) {
-      alert("Пожалуйста, выберите дату заезда и выезда!");
-      return;
-    }
-    const totalGuests = rooms.reduce(
-      (acc, r) => acc + r.adults + r.children,
-      0
-    );
-    // Напр. делаем router.push на /rooms
-    router.push(
-      `/rooms?check_in=${convertDate(mainRoom.checkIn)}&check_out=${convertDate(
-        mainRoom.checkOut
-      )}&guests=${totalGuests}&promo=${mainRoom.promoCode}`
-    );
+    // Логика поиска, переход куда-то ещё
   };
 
-  // Удобно взять данные из rooms[0] как «основную комнату»
-  const mainRoom = rooms[0];
+  const mainRoom = rooms[0] || {};
 
   return (
     <section className={scss.Filter}>
-      <div className={scss.wrapper}>
-        {/* Заголовок, подпись */}
-        <h2>БРОНИРОВАНИЕ НОМЕРОВ</h2>
-        <p>Гарантированная лучшая цена</p>
+      <div className={scss.headingRow}>
+        <h2>Выберите номер</h2>
+        <a href="#" className={scss.continueBooking}>
+          Продолжить бронирование
+        </a>
+      </div>
 
-        {/* Блок с полями (Заезд, Выезд, Гости, Отель) */}
+      <div className={scss.wrapper}>
         <div className={scss.roomItem}>
           <div className={scss.inputsRow}>
             {/* Заезд */}
@@ -156,7 +127,7 @@ const Filter: FC = () => {
               <FaCalendarAlt className={scss.icon} />
               <div className={scss.label}>Заезд</div>
               <div className={scss.value}>
-                {mainRoom?.checkIn || "Выберите дату"}
+                {mainRoom.checkIn || "Выберите дату"}
               </div>
             </div>
 
@@ -164,7 +135,7 @@ const Filter: FC = () => {
             <div
               className={scss.inputBlock}
               onClick={() => {
-                if (!mainRoom?.checkIn) {
+                if (!mainRoom.checkIn) {
                   alert("Сначала выберите дату заезда!");
                   return;
                 }
@@ -174,7 +145,7 @@ const Filter: FC = () => {
               <FaCalendarAlt className={scss.icon} />
               <div className={scss.label}>Выезд</div>
               <div className={scss.value}>
-                {mainRoom?.checkOut || "Выберите дату"}
+                {mainRoom.checkOut || "Выберите дату"}
               </div>
             </div>
 
@@ -191,7 +162,7 @@ const Filter: FC = () => {
               </div>
             </div>
 
-            {/* Отель */}
+            {/* Отель (промокод) */}
             <div
               className={scss.inputBlock}
               onClick={() => setOpenPromoModal(true)}
@@ -199,16 +170,35 @@ const Filter: FC = () => {
               <FaTag className={scss.icon} />
               <div className={scss.label}>Отель</div>
               <div className={scss.value}>
-                {mainRoom?.promoCode || "Выберите отель"}
+                {mainRoom.promoCode || "Выберите отель"}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Кнопка "Найти номер" */}
-        <button className={scss.searchBtn} onClick={handleFindRoom}>
-          Найти номер
-        </button>
+        <div className={scss.offerBanner}>
+          <div className={scss.offerBannerLeft}>
+            <h3>БРОНИРУЙТЕ ВЫГОДНЕЕ!</h3>
+          </div>
+          <div className={scss.offerBannerCenter}>
+            <div className={scss.benefitItem}>
+              <span className={scss.benefitIcon}>✓</span>
+              <span>Бронируйте выгоднее</span>
+            </div>
+            <div className={scss.benefitItem}>
+              <span className={scss.benefitIcon}>✓</span>
+              <span>Бесплатное проживание для детей до 7</span>
+            </div>
+            <div className={scss.benefitItem}>
+              <span className={scss.benefitIcon}>✓</span>
+              <span>Шведский стол на завтрак</span>
+            </div>
+          </div>
+          <div className={scss.offerBannerRight}>
+            <div className={scss.bestPriceLabel}>Наша лучшая цена</div>
+            <div className={scss.bestPriceValue}>6&nbsp;300 KGS</div>
+          </div>
+        </div>
       </div>
 
       {/* Модальные окна */}
@@ -225,8 +215,8 @@ const Filter: FC = () => {
       {openCheckInModal && (
         <CalendarModalRates
           onClose={() => setOpenCheckInModal(false)}
-          defaultStart={mainRoom?.checkIn ?? null}
-          defaultEnd={mainRoom?.checkOut ?? null}
+          defaultStart={mainRoom.checkIn}
+          defaultEnd={mainRoom.checkOut}
           onSelectRange={(start, end) => {
             handleCheckInSelect(0, start, end);
             setOpenCheckInModal(false);
@@ -238,9 +228,9 @@ const Filter: FC = () => {
       {openCheckOutModal && (
         <CalendarModalRates
           onClose={() => setOpenCheckOutModal(false)}
-          defaultStart={mainRoom?.checkIn}
-          defaultEnd={mainRoom?.checkOut}
-          onSelectRange={(_start, end) => {
+          defaultStart={mainRoom.checkIn}
+          defaultEnd={mainRoom.checkOut}
+          onSelectRange={(_start: any, end: string) => {
             handleCheckOutSelect(0, end);
             setOpenCheckOutModal(false);
           }}
@@ -251,7 +241,7 @@ const Filter: FC = () => {
       {openPromoModal && (
         <PromoModal
           onClose={() => setOpenPromoModal(false)}
-          defaultPromo={mainRoom?.promoCode || ""}
+          defaultPromo={mainRoom.promoCode || ""}
           onSave={(promo: string) => {
             handlePromoChange(0, promo);
             setOpenPromoModal(false);
@@ -262,4 +252,4 @@ const Filter: FC = () => {
   );
 };
 
-export default Filter;
+export default FilterTwo;
