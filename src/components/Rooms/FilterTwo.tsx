@@ -2,10 +2,10 @@
 import React, { FC, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import scss from "./FilterTwo.module.scss";
-import { FaCalendarAlt, FaUserFriends, FaTag, FaFlag } from "react-icons/fa";
+import { FaCalendarAlt, FaUserFriends, FaTag } from "react-icons/fa";
 import CalendarModalRates from "../pages/HomePage/CalendarModalRates";
-import GuestsModal from "../pages/HomePage/GuestsModal";
 import PromoModal from "../pages/HomePage/PromoModal";
+import GuestsModal from "../pages/HomePage/GuestsModal";
 
 interface IRoom {
   checkIn: string | null; // "DD.MM.YYYY"
@@ -34,24 +34,28 @@ const FilterTwo: FC = () => {
   const [openPromoModal, setOpenPromoModal] = useState(false);
   const [openGuestsModal, setOpenGuestsModal] = useState(false);
 
-  // 1) При монтировании: читаем из localStorage
+  // При монтировании читаем из localStorage
   useEffect(() => {
-    const storedData = localStorage.getItem("bookingRooms");
-    if (storedData) {
-      try {
-        const parsed = JSON.parse(storedData);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setRooms(parsed);
+    if (typeof window !== "undefined") {
+      const storedData = localStorage.getItem("bookingRooms");
+      if (storedData) {
+        try {
+          const parsed = JSON.parse(storedData);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setRooms(parsed);
+          }
+        } catch (error) {
+          console.warn("Ошибка чтения localStorage:", error);
         }
-      } catch (error) {
-        console.warn("Ошибка чтения localStorage:", error);
       }
     }
   }, []);
 
-  // 2) При каждом изменении rooms: сохраняем в localStorage
+  // При изменении rooms сохраняем их в localStorage
   useEffect(() => {
-    localStorage.setItem("bookingRooms", JSON.stringify(rooms));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("bookingRooms", JSON.stringify(rooms));
+    }
   }, [rooms]);
 
   // Обработчики
@@ -100,20 +104,22 @@ const FilterTwo: FC = () => {
     );
   };
 
-  // Если хотите добавить кнопку на втором экране, можно
-  const handleFindRoom = () => {
-    // Логика поиска, переход куда-то ещё
+  // Кнопка "Продолжить бронирование"
+  const handleContinue = () => {
+    alert("Данные сохранены. Продолжим бронирование!");
+    // Например, можно перейти на другую страницу:
+    // router.push("/payment");
   };
 
-  const mainRoom = rooms[0] || {};
+  const mainRoom = rooms[0];
 
   return (
     <section className={scss.Filter}>
       <div className={scss.headingRow}>
         <h2>Выберите номер</h2>
-        <a href="#" className={scss.continueBooking}>
+        <button className={scss.continueBooking} onClick={handleContinue}>
           Продолжить бронирование
-        </a>
+        </button>
       </div>
 
       <div className={scss.wrapper}>
@@ -162,7 +168,7 @@ const FilterTwo: FC = () => {
               </div>
             </div>
 
-            {/* Отель (промокод) */}
+            {/* Отель */}
             <div
               className={scss.inputBlock}
               onClick={() => setOpenPromoModal(true)}
@@ -230,7 +236,7 @@ const FilterTwo: FC = () => {
           onClose={() => setOpenCheckOutModal(false)}
           defaultStart={mainRoom.checkIn}
           defaultEnd={mainRoom.checkOut}
-          onSelectRange={(_start: any, end: string) => {
+          onSelectRange={(_start, end) => {
             handleCheckOutSelect(0, end);
             setOpenCheckOutModal(false);
           }}
