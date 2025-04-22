@@ -1,15 +1,17 @@
+// === src/components/pages/HomePage/Filter.tsx ===
 "use client";
-import { FC, useState } from "react";
+import React, { FC, useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import scss from "./Filter.module.scss";
 import { FaCalendarAlt, FaUserFriends, FaTag } from "react-icons/fa";
 import GuestsModal from "./GuestsModal";
 import CalendarModalRates from "./CalendarModalRates";
 import PromoModal from "./PromoModal";
+import { differenceInCalendarDays, parse, format } from "date-fns";
 
 interface IRoom {
-  checkIn: string | null; // формат "DD.MM.YYYY"
-  checkOut: string | null; // формат "DD.MM.YYYY"
+  checkIn: string | null; // "DD.MM.YYYY"
+  checkOut: string | null;
   adults: number;
   children: number;
   childrenAges: number[];
@@ -25,6 +27,16 @@ const createNewRoom = (): IRoom => ({
   promoCode: "",
 });
 
+/**  Преобразуем формат DD.MM.YYYY → YYYY-MM-DD для query‑строки  */
+const toISO = (date: string) => {
+  const [dd, mm, yyyy] = date.split(".");
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+/**  Кол-во ночей между двумя датами в формате DD.MM.YYYY  */
+const nightsBetween = (start: string, end: string) =>
+  differenceInCalendarDays(parse(end, "dd.MM.yyyy", new Date()), parse(start, "dd.MM.yyyy", new Date()));
+
 const Filter: FC = () => {
   const router = useRouter();
   const [rooms, setRooms] = useState<IRoom[]>([createNewRoom()]);
@@ -33,76 +45,72 @@ const Filter: FC = () => {
   const [openPromoModal, setOpenPromoModal] = useState(false);
   const [openGuestsModal, setOpenGuestsModal] = useState(false);
 
-  const handleCheckInSelect = (
-    roomIndex: number,
-    start: string,
-    end: string
-  ) => {
-    setRooms((prev) =>
-      prev.map((r, i) =>
-        i === roomIndex ? { ...r, checkIn: start, checkOut: end } : r
-      )
-    );
-  };
+  /* ---------- localStorage sync ---------- */
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("bookingRooms", JSON.stringify(rooms));
+    }
+  }, [rooms]);
 
-  const handleCheckOutSelect = (roomIndex: number, end: string) => {
-    setRooms((prev) =>
-      prev.map((r, i) => (i === roomIndex ? { ...r, checkOut: end } : r))
-    );
-  };
+  /* ---------- callbacks ---------- */
+  const handleCheckInSelect = (idx: number, start: string, end: string) =>
+    setRooms((prev) => prev.map((r, i) => (i === idx ? { ...r, checkIn: start, checkOut: end } : r)));
 
-  const handlePromoChange = (roomIndex: number, promoCode: string) => {
-    setRooms((prev) =>
-      prev.map((r, i) => (i === roomIndex ? { ...r, promoCode } : r))
-    );
-  };
+  const handleCheckOutSelect = (idx: number, end: string) =>
+    setRooms((prev) => prev.map((r, i) => (i === idx ? { ...r, checkOut: end } : r)));
 
-  const handleAddRoom = () => {
-    setRooms((prev) => [...prev, createNewRoom()]);
-  };
-
-  const handleRemoveRoom = (index: number) => {
-    setRooms((prev) => {
-      const copy = [...prev];
-      copy.splice(index, 1);
-      return copy.length === 0 ? [createNewRoom()] : copy;
-    });
-  };
+  const handlePromoChange = (idx: number, promoCode: string) =>
+    setRooms((prev) => prev.map((r, i) => (i === idx ? { ...r, promoCode } : r)));
 
   const handleRoomGuestsChange = (
-    roomIndex: number,
-    newData: { adults: number; children: number; childrenAges: number[] }
-  ) => {
-    setRooms((prev) =>
-      prev.map((r, i) => (i === roomIndex ? { ...r, ...newData } : r))
-    );
-  };
+    idx: number,
+    data: { adults: number; children: number; childrenAges: number[] }
+  ) => setRooms((prev) => prev.map((r, i) => (i === idx ? { ...r, ...data } : r)));
 
-  const convertDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    const [dd, mm, yyyy] = dateStr.split(".");
-    return `${yyyy}-${mm}-${dd}`;
-  };
-
+  /* ---------- основной экшн "Найти номер" ---------- */
   const handleFindRoom = () => {
-    const mainRoom = rooms[0];
-    if (!mainRoom.checkIn || !mainRoom.checkOut) {
+    const main = rooms[0];
+    if (!main.checkIn || !main.checkOut) {
       alert("Сначала выберите даты заезда и выезда");
       return;
     }
-    const totalGuests = rooms.reduce(
-      (acc, r) => acc + r.adults + r.children,
-      0
-    );
-    router.push(
-      `/rooms?check_in=${convertDate(mainRoom.checkIn)}&check_out=${convertDate(
-        mainRoom.checkOut
-      )}&guests=${totalGuests}&promo=${mainRoom.promoCode}`
-    );
+    // Сохраним комнаты ещё раз на всякий 🔒
+    localStorage.setItem("bookingRooms", JSON.stringify(rooms));
+    const storedPrice = localStorage.getItem("selectedPrice") ?? "0";
+
+    const query = new URLSearchParams({
+      check_in: toISO(main.checkIn),
+      check_out: toISO(main.checkOut),
+      guests: String(rooms.reduce((a, r) => a + r.adults + r.children, 0)),
+      promo: main.promoCode ?? "",
+      nights: String(nightsBetween(main.checkIn, main.checkOut)),
+      amount: storedPrice,              // ← добавили
+
+    });
+    router.push(`/rooms?${query.toString()}`);
   };
 
   const mainRoom = rooms[0];
 
+  const handleRemoveRoom = (idx: number) =>
+    setRooms(prev => {
+      const copy = [...prev];
+      copy.splice(idx, 1);
+      return copy.length ? copy : [createNewRoom()];
+    });
+  
+  useEffect(() => {
+    const stored = typeof window !== "undefined"
+      ? localStorage.getItem("bookingRooms")
+      : null;
+    if (stored) {
+      try {
+        const arr = JSON.parse(stored) as IRoom[];
+        if (arr.length) setRooms(arr);
+      } catch (_) {/* ignore */}
+    }
+  }, []);
+  
   return (
     <section className={scss.Filter}>
       <div className={scss.wrapper}>
@@ -177,7 +185,7 @@ const Filter: FC = () => {
         <GuestsModal
           rooms={rooms}
           onClose={() => setOpenGuestsModal(false)}
-          onAddRoom={handleAddRoom}
+          onAddRoom={() => setRooms(prev => [...prev, createNewRoom()])}   // FIX
           onRemoveRoom={handleRemoveRoom}
           onUpdateRoom={handleRoomGuestsChange}
         />
