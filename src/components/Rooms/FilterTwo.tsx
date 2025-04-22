@@ -1,14 +1,17 @@
 "use client";
-import React, { FC, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { FC, useState, useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import scss from "./FilterTwo.module.scss";
 import { FaCalendarAlt, FaUserFriends, FaTag } from "react-icons/fa";
 import CalendarModalRates from "../pages/HomePage/CalendarModalRates";
 import PromoModal from "../pages/HomePage/PromoModal";
 import GuestsModal from "../pages/HomePage/GuestsModal";
+import { differenceInCalendarDays, parse } from "date-fns";
+import { useSearchRoomsQuery } from "@/redux/api/room";
+import { toISO } from "@/utils/date";
 
 interface IRoom {
-  checkIn: string | null; // "DD.MM.YYYY"
+  checkIn: string | null;
   checkOut: string | null;
   adults: number;
   children: number;
@@ -25,101 +28,116 @@ const createNewRoom = (): IRoom => ({
   promoCode: "",
 });
 
+/** YYYY-MM-DD → DD.MM.YYYY */
+const fromISO = (iso: string) => {
+  const [yyyy, mm, dd] = iso.split("-");
+  return `${dd}.${mm}.${yyyy}`;
+};
+
 const FilterTwo: FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [rooms, setRooms] = useState<IRoom[]>([createNewRoom()]);
+  const { data: foundRooms = [], isFetching } = useSearchRoomsQuery(
+    rooms[0].checkIn && rooms[0].checkOut
+      ? {
+          check_in: toISO(rooms[0].checkIn!), // util из Filter.tsx
+          check_out: toISO(rooms[0].checkOut!),
+          guests: rooms.reduce((a, r) => a + r.adults + r.children, 0),
+        }
+      : {},
+    { skip: !rooms[0].checkIn || !rooms[0].checkOut }
+  );
+
+  /* ---------- helpers ---------- */
+  const nights =
+  rooms[0].checkIn && rooms[0].checkOut
+    ? differenceInCalendarDays(
+        parse(rooms[0].checkOut!, "dd.MM.yyyy", new Date()),
+        parse(rooms[0].checkIn!, "dd.MM.yyyy", new Date())
+      )
+    : null;        
+
+  const bestPrice = useMemo(() => {
+    if (!foundRooms.length) return null;
+    const nums = foundRooms
+      .map((r) => Number(r.total_price ?? 0))
+      .filter(Boolean);
+    return nums.length ? Math.min(...nums) : null;
+  }, [foundRooms]);
+
+  useEffect(() => {
+    const stored =
+      typeof window !== "undefined"
+        ? localStorage.getItem("bookingRooms")
+        : null;
+    let initial: IRoom[] | null = null;
+    if (stored) {
+      try {
+        initial = JSON.parse(stored);
+      } catch (_) {
+        /* noop */
+      }
+    }
+
+    const checkInISO = searchParams.get("check_in");
+    const checkOutISO = searchParams.get("check_out");
+    const promo = searchParams.get("promo") ?? initial?.[0]?.promoCode ?? "";
+
+    if (checkInISO && checkOutISO) {
+      const base = initial?.[0] ?? createNewRoom();
+      base.checkIn = fromISO(checkInISO);
+      base.checkOut = fromISO(checkOutISO);
+      base.promoCode = promo;
+      setRooms([base]);
+    } else if (initial) {
+      setRooms(initial);
+    }
+  }, [searchParams]);
 
   const [openCheckInModal, setOpenCheckInModal] = useState(false);
   const [openCheckOutModal, setOpenCheckOutModal] = useState(false);
-  const [openPromoModal, setOpenPromoModal] = useState(false);
   const [openGuestsModal, setOpenGuestsModal] = useState(false);
+  const [openPromoModal, setOpenPromoModal] = useState(false);
 
-  // При монтировании читаем из localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedData = localStorage.getItem("bookingRooms");
-      if (storedData) {
-        try {
-          const parsed = JSON.parse(storedData);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setRooms(parsed);
-          }
-        } catch (error) {
-          console.warn("Ошибка чтения localStorage:", error);
-        }
-      }
-    }
-  }, []);
+  const handleAddRoom = () => setRooms((prev) => [...prev, createNewRoom()]);
 
-  // При изменении rooms сохраняем их в localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("bookingRooms", JSON.stringify(rooms));
-    }
-  }, [rooms]);
-
-  // Обработчики
-  const handleCheckInSelect = (
-    roomIndex: number,
-    start: string,
-    end: string
-  ) => {
-    setRooms((prev) =>
-      prev.map((r, i) =>
-        i === roomIndex ? { ...r, checkIn: start, checkOut: end } : r
-      )
-    );
-  };
-
-  const handleCheckOutSelect = (roomIndex: number, end: string) => {
-    setRooms((prev) =>
-      prev.map((r, i) => (i === roomIndex ? { ...r, checkOut: end } : r))
-    );
-  };
-
-  const handlePromoChange = (roomIndex: number, promoCode: string) => {
-    setRooms((prev) =>
-      prev.map((r, i) => (i === roomIndex ? { ...r, promoCode } : r))
-    );
-  };
-
-  const handleAddRoom = () => {
-    setRooms((prev) => [...prev, createNewRoom()]);
-  };
-
-  const handleRemoveRoom = (index: number) => {
+  const handleRemoveRoom = (index: number) =>
     setRooms((prev) => {
       const copy = [...prev];
       copy.splice(index, 1);
-      return copy.length === 0 ? [createNewRoom()] : copy;
+      return copy.length ? copy : [createNewRoom()];
     });
-  };
 
   const handleRoomGuestsChange = (
-    roomIndex: number,
-    newData: { adults: number; children: number; childrenAges: number[] }
-  ) => {
+    idx: number,
+    data: { adults: number; children: number; childrenAges: number[] }
+  ) =>
+    setRooms((prev) => prev.map((r, i) => (i === idx ? { ...r, ...data } : r)));
+
+  const handleCheckInSelect = (idx: number, start: string, end: string) =>
     setRooms((prev) =>
-      prev.map((r, i) => (i === roomIndex ? { ...r, ...newData } : r))
+      prev.map((r, i) =>
+        i === idx ? { ...r, checkIn: start, checkOut: end } : r
+      )
     );
-  };
 
-  // Кнопка "Продолжить бронирование"
-  const handleContinue = () => {
-    alert("Данные сохранены. Продолжим бронирование!");
-    // Например, можно перейти на другую страницу:
-    // router.push("/payment");
-  };
+  const handleCheckOutSelect = (idx: number, end: string) =>
+    setRooms((prev) =>
+      prev.map((r, i) => (i === idx ? { ...r, checkOut: end } : r))
+    );
 
+  const handlePromoChange = (idx: number, promo: string) =>
+    setRooms((prev) =>
+      prev.map((r, i) => (i === idx ? { ...r, promoCode: promo } : r))
+    );
   const mainRoom = rooms[0];
+  const amount = searchParams.get("amount");
 
   return (
     <section className={scss.Filter}>
       <div className={scss.headingRow}>
         <h2>Выберите номер</h2>
-        <button className={scss.continueBooking} onClick={handleContinue}>
-          Продолжить бронирование
-        </button>
       </div>
 
       <div className={scss.wrapper}>
@@ -202,12 +220,13 @@ const FilterTwo: FC = () => {
           </div>
           <div className={scss.offerBannerRight}>
             <div className={scss.bestPriceLabel}>Наша лучшая цена</div>
-            <div className={scss.bestPriceValue}>6&nbsp;300 KGS</div>
+            <div className={scss.bestPriceValue}>
+  {amount ? Number(amount).toLocaleString() : "—"}&nbsp;KGS
+</div>
           </div>
         </div>
       </div>
 
-      {/* Модальные окна */}
       {openGuestsModal && (
         <GuestsModal
           rooms={rooms}
@@ -248,7 +267,7 @@ const FilterTwo: FC = () => {
         <PromoModal
           onClose={() => setOpenPromoModal(false)}
           defaultPromo={mainRoom.promoCode || ""}
-          onSave={(promo: string) => {
+          onSave={(promo) => {
             handlePromoChange(0, promo);
             setOpenPromoModal(false);
           }}
@@ -259,3 +278,4 @@ const FilterTwo: FC = () => {
 };
 
 export default FilterTwo;
+

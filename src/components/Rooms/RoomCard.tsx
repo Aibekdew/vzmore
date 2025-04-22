@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Slider from "react-slick"; // Импорт react-slick
 import { Room } from "@/redux/api/room";
 import RoomModal from "./RoomModal";
@@ -8,6 +8,7 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { FaSnowflake, FaMoneyBillWave } from "react-icons/fa";
 import { MdSafetyDivider } from "react-icons/md";
 import { PiHairDryerFill } from "react-icons/pi";
+import { differenceInCalendarDays, parseISO } from "date-fns";
 
 interface RoomCardProps {
   room: Room;
@@ -45,7 +46,14 @@ export default function RoomCard({
 
   // Если фото есть, берём их, иначе показываем заглушку
   const photos = room.photos && room.photos.length > 0 ? room.photos : null;
-
+  const nights = useMemo(
+    () => differenceInCalendarDays(parseISO(checkOut), parseISO(checkIn)),
+    [checkIn, checkOut]
+  );
+  const totalPrice = useMemo(
+    () => Number(room.price_per_night) * nights,
+    [room.price_per_night, nights]
+  );
   return (
     <>
       {" "}
@@ -60,7 +68,7 @@ export default function RoomCard({
                   <div key={photo.id}>
                     <img
                       src={imageUrl}
-                      alt={room.title}
+                      alt={room.category_name}                      
                       className="w-full h-56 object-cover"
                     />
                   </div>
@@ -84,7 +92,7 @@ export default function RoomCard({
         </div>
 
         <div className="p-6 flex flex-col flex-grow">
-          <h2 className="text-xl font-semibold mb-2">{room.title}</h2>
+          <h2 className="text-xl font-semibold mb-2">{room.category_name}</h2>
           <div className="flex flex-wrap gap-2 text-sm text-gray-700 mb-2">
             <span>До {room.capacity} мест</span>
             <span>{room.square_meters} м²</span>
@@ -121,7 +129,9 @@ export default function RoomCard({
               ? getShortDescription(room.description)
               : "Нет описания"}
           </p>
-          <div className="mt-auto text-right">
+          <div className="text-sm text-gray-700 mb-4">
+            Всего за {nights} ночей:{" "}
+            <strong>{totalPrice.toLocaleString()} KGS</strong>
             <button
               onClick={() => setOpenModal(true)}
               className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition-colors duration-300"
